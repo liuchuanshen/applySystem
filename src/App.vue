@@ -1,28 +1,63 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+     <Loading v-show="LOADING"></Loading>
+     <keep-alive>
+      <router-view class="router"></router-view>
+     </keep-alive>
+      <Tabbar class="tabbar" v-show="tabbarStatus"></Tabbar>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import {mapState} from 'vuex'
+import Loading from './components/loading.vue'
+import Tabbar from './components/tabbar.vue'
 
 export default {
   name: 'App',
+  data() {
+      return {
+        tabbarStatus:false
+      };
+  },
+  computed: {
+      ...mapState(['LOADING'])
+  },
+  watch:{
+       '$route':'getPath'
+	},
   components: {
-    HelloWorld
+    Loading,
+    Tabbar
+  },
+  created(){
+     this.getPath()
+  },
+  methods:{
+     getPath(){
+        if(this.$route.path==='/' || this.$route.path==='/login'){
+          this.tabbarStatus=false
+        }else{
+          this.tabbarStatus=true
+        }
+      }
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+#app{
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.router{
+  flex: 1;
+}
+.tabbar{
+  height: 50px;
+  border-top-width: 1px;
+  border-top-color:#ccc;
+  border-top-style: solid;
 }
 </style>
